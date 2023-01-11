@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homework 16</title>
+</head>
+
+<body>
+    <script>
+        function listGroup(list, prop) {
+            let groupObj = list.reduce((map, item) => {
+
+                if (Array.isArray(item[prop])) {
+                    for (const iterator of item[prop]) {
+                        if (!map[iterator]) {
+                            map[iterator] = [];
+                        }
+                        map[iterator].push(item);
+                    }
+                } else {
+                    if (!map[item[prop]]) {
+                        map[item[prop]] = [];
+                    }
+                    map[item[prop]].push(item);
+                }
+
+                return map;
+            }, {})
+
+            groupObj[Symbol.iterator] = function () {
+                let values = Object.values(this).flat().filter((element, index, arr) => arr.indexOf(element) == index);
+                let index = 0;
+
+                return {
+                    next() {
+                        if (index === values.length) {
+                            return {
+                                done: true
+                            }
+                        } else {
+                            return {
+                                done: false,
+                                value: values[index++]
+                            }
+                        }
+
+                        return {
+                            done: true,
+                        }
+                    }
+                }
+            }
+
+            return groupObj;
+        }
+
+        let films = [
+            {
+                name: 'Back to the future',
+                year: 1985,
+                ganre: ['fantasy', 'scince fiction']
+            },
+            {
+                name: 'Titanic',
+                year: 2001,
+                ganre: ['drama']
+            },
+            {
+                name: 'Green mile',
+                year: 1997,
+                ganre: ['drama']
+            },
+            {
+                name: 'Troy',
+                year: 2004,
+                ganre: ['history', 'drama']
+            },
+            {
+                name: 'It',
+                year: 2019,
+                ganre: ['scary', 'drama']
+            },
+            {
+                name: 'Mask',
+                year: 2001,
+                ganre: ['comedy', 'family']
+            },
+            {
+                name: 'Interstellar',
+                year: 2014,
+                ganre: ['scince fiction', 'drama']
+            },
+        ]
+
+        let groupGanre = listGroup(films, 'ganre');
+        let groupYear = listGroup(films, 'year');
+        console.log(groupGanre);
+        console.log(groupYear);
+
+        for (const iterator of groupGanre) {
+            console.log(iterator);
+        }
+    </script>
+</body>
+
+</html>
